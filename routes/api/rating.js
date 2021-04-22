@@ -23,7 +23,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function 
         review: req.body.review,
     })
 
-    const oldDispensary = await Dispensary.findOne({ _id: req.body.dispensaryId }).catch(err => console.log(err));
+    const oldDispensary = await Dispensary.findOne({ _id: req.body.dispensaryId }).catch(err => res.send(err));
     const oldRatings = await Rating.find({ dispensary: req.body.dispensaryId }, 'user rating').exec();
 
     for (let i in oldRatings) {
@@ -33,7 +33,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), async function 
     }
 
     const newAvg = (parseFloat(oldDispensary.avgRating) * oldRatings.length + parseInt(req.body.rating)) / (oldRatings.length + 1);
-    await Dispensary.updateOne({ _id: req.body.dispensaryId }, { avgRating: newAvg }).catch(err => console.log(err));
+    await Dispensary.updateOne({ _id: req.body.dispensaryId }, { avgRating: newAvg }).catch(err => res.send(err));
 
     // newDispensary.save()
     newRating.save().then(rating => res.json(rating))
@@ -55,6 +55,12 @@ router.get('/dispensary/:dispensaryId', async function (req, res) {
     }
 
     res.json(data);
+})
+
+router.delete('/:ratingId', async function (req, res) {
+    // res.send("got delete")
+    const deleteRating = await Rating.deleteOne({_id: req.params.ratingId}).catch(err => res.status(400).json(err))
+    res.send(deleteRating)
 })
 
 module.exports = router

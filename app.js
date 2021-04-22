@@ -13,7 +13,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 const path = require("path");
 
-
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("frontend/build"));
     app.get("/", (req, res) => {
@@ -23,8 +22,8 @@ if (process.env.NODE_ENV === "production") {
 
 mongoose
     .connect(db, { userNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("Connected to MongoDB successfully"))
-    .catch((err) => console.log(err));
+    // .then(() => console.log("Connected to MongoDB successfully"))
+    // .catch((err) => console.log(err));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -38,3 +37,4 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
+
